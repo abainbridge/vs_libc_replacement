@@ -6,4 +6,7 @@
     <ClCompile Include="..\src\string.c" />
     <ClCompile Include="..\src\misc.c" />
   </ItemGroup>
+  <ItemGroup>
+    <MASM Include="..\src\allmul.asm" />
+  </ItemGroup>
 </Project>
