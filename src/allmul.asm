@@ -7,7 +7,9 @@
 ;
 ; The standard Visual Studio implementation is 48 bytes long. This one
 ; is 31. Comically, the VS version includes conditional branches,
-; presumably because that was an optimization on a 80386.
+; presumably because that was an optimization on a 80386. Annoyingly
+; the overhead to the caller to call this function is about 39 bytes.
+; The compiler really should inline this function, but it never does.
 ;
 ; Let's call the 64-bit input params A and B. We deal with them in
 ; 32-bit chunks: AL, AH, BL, BH.

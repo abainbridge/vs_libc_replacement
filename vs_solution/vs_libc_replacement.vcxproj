@@ -11,13 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\cpp_support.cpp" />
     <ClCompile Include="..\src\math.c" />
-    <ClCompile Include="..\src\misc.c" />
-    <ClCompile Include="..\src\string.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <MASM Include="..\src\allmul.asm" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0BA23E44-2E8D-4C5B-AAA6-40AD028B93B2}</ProjectGuid>

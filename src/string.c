@@ -1,25 +1,21 @@
-#include <windows.h>
-#include <Winuser.h>
+// #include <windows.h>
+// #include <Winuser.h>
+#include <stdlib.h>
+//#include "stdlib_common.h"
+#include <crtdefs.h>
 
 
 #define LOWER_CASE_MASK ('a' - 'A')
 
-int isdigit(int c) 
-{ 
-    return c >= '0' && c <= '9'; 
-}
+//_Check_return_ _CRTIMP _CONST_RETURN char *  __cdecl strchr(_In_z_ const char *str, _In_ int character)
+const char *strchr(const char * str, int character)
+{
+    while (*str) {
+        if (*str == character)
+            return str;
+    }
 
-
-int isalpha(int c) 
-{ 
-    c |= LOWER_CASE_MASK; 
-    return c >= 'a' && c <= 'z'; 
-}
-
-
-int isupper(int c) 
-{ 
-    return !(c & LOWER_CASE_MASK); 
+    return NULL;
 }
 
 
@@ -77,7 +73,7 @@ char *itoa(int val, char *dstBuf, int radix)
 
 int __cdecl vsprintf(char *string, const char *format, va_list ap) 
 {
-    return wvsprintf(string, format, ap);
+    return 1;// wvsprintf(string, format, ap);
 }
 
 
@@ -97,4 +93,22 @@ void * __cdecl memset(void *target, int value, size_t len)
     while (len-- > 0)
         *p++ = value;
     return target;
+}
+
+
+//#pragma function(memmove)
+void * __cdecl memmove(void *dst, void const *src, size_t len)
+{
+    char const *srcChar = (char const *)src;
+    char *dstChar = (char *)dst;
+    if (src > dst) {
+        for (size_t i = 0; i < len; i++)
+            dstChar[i] = srcChar[i];
+    }
+    else {
+        for (size_t i = len - 1; i; i--)
+            dstChar[i] = srcChar[i];
+    }
+
+    return dst;
 }
