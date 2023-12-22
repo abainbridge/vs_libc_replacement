@@ -31,6 +31,25 @@ extern "C"
                              WS_MINIMIZEBOX    | \
                              WS_MAXIMIZEBOX)
 
+#define BI_RGB        0L
+#define DIB_RGB_COLORS 0 // Not palettized.
+
+#define MAKEINTRESOURCEA(i) ((char *)((ULONG_PTR)((WORD)(i))))
+#define MAKEINTRESOURCE MAKEINTRESOURCEA
+#define IDC_ARROW MAKEINTRESOURCE(32512)
+#define IDC_IBEAM MAKEINTRESOURCE(32513)
+#define IDC_SIZEWE MAKEINTRESOURCE(32644)
+#define IDC_SIZENS MAKEINTRESOURCE(32645)
+
+#define IMAGE_ICON 1
+#define WM_SETICON 0x80
+#define ICON_SMALL 0
+#define ICON_BIG 1
+
+#define SW_SHOWMAXIMIZED    3
+#define SW_MAXIMIZE         3
+#define SW_RESTORE          9
+
 typedef enum {
     DISP_CHANGE_SUCCESSFUL = 0,
     CDS_FULLSCREEN = 0x4,
@@ -94,8 +113,11 @@ DECLARE_HANDLE(HWND);
 DECLARE_HANDLE(HDROP);
 DECLARE_HANDLE(HICON);
 DECLARE_HANDLE(HBRUSH);
+DECLARE_HANDLE(HMENU);
+DECLARE_HANDLE(HDC);
 typedef HINSTANCE HMODULE;
 typedef HICON HCURSOR;
+typedef LONG HRESULT;
 
 #define CALLBACK __stdcall
 #define WINAPI __stdcall
@@ -104,6 +126,8 @@ typedef HICON HCURSOR;
 #define DECLSPEC_IMPORT __declspec(dllimport)
 #define STDAPICALLTYPE __stdcall
 #define SHSTDAPI_(type) DECLSPEC_IMPORT type STDAPICALLTYPE
+#define WINGDIAPI DECLSPEC_IMPORT
+#define STDAPI extern "C" HRESULT STDAPICALLTYPE
 
 typedef int (WINAPI *FARPROC)();
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
@@ -227,6 +251,42 @@ typedef struct _devicemodeA {
 } DEVMODEA;
 typedef DEVMODEA DEVMODE;
 
+typedef struct tagBITMAPINFOHEADER{
+    DWORD      biSize;
+    LONG       biWidth;
+    LONG       biHeight;
+    WORD       biPlanes;
+    WORD       biBitCount;
+    DWORD      biCompression;
+    DWORD      biSizeImage;
+    LONG       biXPelsPerMeter;
+    LONG       biYPelsPerMeter;
+    DWORD      biClrUsed;
+    DWORD      biClrImportant;
+} BITMAPINFOHEADER;
+
+typedef struct tagRGBQUAD {
+    BYTE    rgbBlue;
+    BYTE    rgbGreen;
+    BYTE    rgbRed;
+    BYTE    rgbReserved;
+} RGBQUAD;
+
+typedef struct tagBITMAPINFO {
+    BITMAPINFOHEADER    bmiHeader;
+    RGBQUAD             bmiColors[1];
+} BITMAPINFO;
+
+typedef struct tagWINDOWPLACEMENT {
+    UINT  length;
+    UINT  flags;
+    UINT  showCmd;
+    POINT ptMinPosition;
+    POINT ptMaxPosition;
+    RECT  rcNormalPosition;
+} WINDOWPLACEMENT;
+
+
 // Clipboard.
 #define CF_TEXT             1
 WINUSERAPI int WINAPI OpenClipboard(HWND hWndNewOwner);
@@ -239,21 +299,50 @@ WINUSERAPI HANDLE WINAPI SetClipboardData(unsigned uFormat, HANDLE hMem);
 WINBASEAPI void * WINAPI GlobalLock(HGLOBAL hMem);
 WINBASEAPI int WINAPI GlobalUnlock(HGLOBAL hMem);
 
-// Misc.
-WINBASEAPI void WINAPI OutputDebugString(char *outputString);
-WINUSERAPI SHORT WINAPI GetAsyncKeyState(int vKey);
-WINUSERAPI int WINAPI ScreenToClient(HWND hWnd, POINT *point);
+// Drag and drop.
 #define DragQueryFile DragQueryFileA
 SHSTDAPI_(UINT) DragQueryFileA(HDROP hDrop, UINT iFile, char *file, UINT cch);
+SHSTDAPI_(void) DragAcceptFiles(HWND hWnd, BOOL fAccept);
+
+// Window handle.
+WINUSERAPI int WINAPI ScreenToClient(HWND hWnd, POINT *point);
 WINUSERAPI HWND WINAPI GetDesktopWindow(VOID);
 WINUSERAPI BOOL WINAPI GetWindowRect(HWND hWnd, RECT *rect);
-#define GetModuleHandle  GetModuleHandleA
+#define GetModuleHandle GetModuleHandleA
 WINBASEAPI HMODULE WINAPI GetModuleHandleA(char *moduleName);
 #define RegisterClass RegisterClassA
 WINUSERAPI ATOM WINAPI RegisterClassA(WNDCLASSA const *wndClass);
 #define ChangeDisplaySettings ChangeDisplaySettingsA
-WINUSERAPI LONG WINAPI ChangeDisplaySettingsA(DEVMODEA *devMode, DWORD dwFlags);
-WINUSERAPI BOOL WINAPI AdjustWindowRect(RECT *rect, DWORD dwStyle, BOOL bMenu);
+#define CreateWindow CreateWindowA
+#define CreateWindowA(className, windowName, style, x, y, \
+    nWidth, nHeight, hWndParent, hMenu, hInstance, param)\
+    CreateWindowExA(0L, className, windowName, style, x, y, \
+    nWidth, nHeight, hWndParent, hMenu, hInstance, param)
+WINUSERAPI HWND WINAPI CreateWindowExA(DWORD exStyle, char const *className, char const *windowName,
+    DWORD style, int x, int y, int width, int height,
+    HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, void *param);
+WINUSERAPI BOOL WINAPI DestroyWindow(HWND hWnd);
+WINUSERAPI BOOL WINAPI GetWindowPlacement(HWND hWnd, WINDOWPLACEMENT *wndpl);
+WINUSERAPI BOOL WINAPI ShowWindow(HWND hWnd, int nCmdShow);
+WINUSERAPI BOOL WINAPI BringWindowToTop(HWND hWnd);
+WINUSERAPI BOOL WINAPI SetForegroundWindow(HWND hWnd);
+#define SetWindowText SetWindowTextA
+WINUSERAPI BOOL WINAPI SetWindowTextA(HWND hWnd, char const *string);
+
+// Device context.
+WINUSERAPI HDC WINAPI GetDC(HWND hWnd);
+WINGDIAPI int WINAPI SetDIBitsToDevice(HDC hdc, int xDest, int yDest, DWORD w, DWORD h, int xSrc,
+    int ySrc, UINT StartScan, UINT cLines, const void *vBits, const BITMAPINFO *bmi, UINT ColorUse);
+WINUSERAPI int WINAPI ReleaseDC(HWND hWnd, HDC hDC);
+
+WINUSERAPI HANDLE WINAPI LoadImageA(HINSTANCE hInst, char const *name, UINT type, int cx, int cy, UINT fuLoad);
+
+
+// Misc.
+WINBASEAPI void WINAPI OutputDebugString(char *outputString);
+WINUSERAPI SHORT WINAPI GetAsyncKeyState(int vKey);
+WINUSERAPI LONG WINAPI ChangeDisplaySettingsA(DEVMODEA *devMode, DWORD flags);
+WINUSERAPI BOOL WINAPI AdjustWindowRect(RECT *rect, DWORD style, BOOL menu);
 
 // Load DLL.
 #define LoadLibrary  LoadLibraryA
@@ -265,6 +354,10 @@ WINBASEAPI FARPROC WINAPI GetProcAddress(HMODULE hModule, char *procName);
 WINUSERAPI int WINAPI GetCursorPos(POINT *point);
 WINUSERAPI HWND WINAPI SetCapture(HWND hWnd);
 WINUSERAPI BOOL WINAPI ReleaseCapture(VOID);
+WINUSERAPI int WINAPI ShowCursor(BOOL bShow);
+WINUSERAPI HCURSOR WINAPI SetCursor(HCURSOR hCursor);
+#define LoadCursor LoadCursorA
+WINUSERAPI HCURSOR WINAPI LoadCursorA(HINSTANCE hInstance, char const *cursorName);
 
 // Messages.
 #define PM_REMOVE 1
