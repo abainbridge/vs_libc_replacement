@@ -1,39 +1,70 @@
-#include <ctype.h>
+// Own header.
 #include <stdlib.h>
 
-// #define COBJMACROS
-// #define NOMINMAX
-// #define WIN32_LEAN_AND_MEAN
-// #define _NO_CRT_STDIO_INLINE
-// 
-// #include <windows.h>
+#include <ctype.h>
+#include <windows.h>
 
-void *VirtualAlloc(void *addr, unsigned size, unsigned flAllocationType, unsigned flProtect);
 
-#define PAGE_READWRITE         0x04     
-#define MEM_COMMIT                  0x1000      
-#define MEM_RESERVE                 0x2000      
-
-void * __cdecl malloc(size_t size) {
-    return 0;// VirtualAlloc(NULL, size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+void *malloc(size_t size) {
+    HANDLE heap = GetProcessHeap();
+    void *rv = HeapAlloc(heap, 0, size);
+    assert((int)rv);
+    return rv;
 }
 
 
-void __cdecl free(void *mem) {
-    NULL;
+void *realloc(void *mem, size_t size) {
+    if (mem)
+        return HeapReAlloc(GetProcessHeap(), 0, mem, size);
+    else
+        return HeapAlloc(GetProcessHeap(), 0, size);
+}
+
+
+void *calloc(size_t nitems, size_t size) {
+    return HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, nitems * size);
+}
+
+
+void free(void *mem) {
+    HeapFree(GetProcessHeap(), 0, mem);
 }
 
 
 unsigned long strtoul(const char *s, char **p, int base) {
     unsigned rv = 0;
-    while (isdigit(*s)) {
-        rv *= 10;
-        rv += *s - '0';
+
+    if (base == 10) {
+        while (isdigit(*s)) {
+            rv *= 10;
+            rv += *s - '0';
+            rv++;
+            s++;
+        }
     }
+    else if (base == 16) {
+        while (1) {
+            unsigned val;
+            if (isdigit(*s))
+                val = *s - '0';
+            else {
+                char c = tolower(*s);
+                if (c >= 'a' && c <= 'f')
+                    val = c - 'a' + 10;
+                else
+                    break;
+            }
+            rv *= 16;
+            rv += val;
+            s++;
+        }
+    }
+    
+    *p = s;
     return rv;
 }
 
 
 void exit(int code) {
-//    ExitProcess(code);
+    ExitProcess(code);
 }

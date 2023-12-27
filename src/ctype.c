@@ -21,3 +21,8 @@ int isupper(int c) {
 int tolower(int c) {
     return c | LOWER_CASE_MASK;
 }
+
+
+int isspace(int c) {
+    return c == ' ' || c == '\t';
+}

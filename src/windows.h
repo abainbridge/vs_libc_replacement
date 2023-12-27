@@ -1,6 +1,9 @@
 #pragma once
 
 
+#include <stdlib.h>
+
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -50,7 +53,27 @@ extern "C"
 #define SW_MAXIMIZE         3
 #define SW_RESTORE          9
 
+// File
+#define CREATE_NEW          1
+#define CREATE_ALWAYS       2
+#define OPEN_EXISTING       3
+#define OPEN_ALWAYS         4
+#define TRUNCATE_EXISTING   5
+#define GENERIC_READ    (0x80000000L)
+#define GENERIC_WRITE   (0x40000000L)
+#define GENERIC_EXECUTE (0x20000000L)
+#define GENERIC_ALL     (0x10000000L)
+#define INVALID_HANDLE_VALUE ((HANDLE)(LONG_PTR)-1)
+#define FILE_BEGIN           0
+#define FILE_CURRENT         1
+#define FILE_END             2
+#define INVALID_SET_FILE_POINTER ((DWORD)-1)
+
+#define HEAP_ZERO_MEMORY 0x8      
+
+
 typedef enum {
+
     DISP_CHANGE_SUCCESSFUL = 0,
     CDS_FULLSCREEN = 0x4,
 
@@ -128,6 +151,7 @@ typedef LONG HRESULT;
 #define SHSTDAPI_(type) DECLSPEC_IMPORT type STDAPICALLTYPE
 #define WINGDIAPI DECLSPEC_IMPORT
 #define STDAPI extern "C" HRESULT STDAPICALLTYPE
+#define DECLSPEC_NORETURN __declspec(noreturn)
 
 typedef int (WINAPI *FARPROC)();
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
@@ -286,6 +310,26 @@ typedef struct tagWINDOWPLACEMENT {
     RECT  rcNormalPosition;
 } WINDOWPLACEMENT;
 
+typedef struct _OVERLAPPED {
+    ULONG_PTR Internal;
+    ULONG_PTR InternalHigh;
+    union {
+        struct {
+            DWORD Offset;
+            DWORD OffsetHigh;
+        } DUMMYSTRUCTNAME;
+        void *Pointer;
+    } DUMMYUNIONNAME;
+
+    HANDLE  hEvent;
+} OVERLAPPED;
+
+typedef struct _SECURITY_ATTRIBUTES {
+    DWORD nLength;
+    void *securityDescriptor;
+    BOOL bInheritHandle;
+} SECURITY_ATTRIBUTES;
+
 
 // Clipboard.
 #define CF_TEXT             1
@@ -299,17 +343,12 @@ WINUSERAPI HANDLE WINAPI SetClipboardData(unsigned uFormat, HANDLE hMem);
 WINBASEAPI void * WINAPI GlobalLock(HGLOBAL hMem);
 WINBASEAPI int WINAPI GlobalUnlock(HGLOBAL hMem);
 
-// Drag and drop.
-#define DragQueryFile DragQueryFileA
-SHSTDAPI_(UINT) DragQueryFileA(HDROP hDrop, UINT iFile, char *file, UINT cch);
-SHSTDAPI_(void) DragAcceptFiles(HWND hWnd, BOOL fAccept);
-
 // Window handle.
 WINUSERAPI int WINAPI ScreenToClient(HWND hWnd, POINT *point);
 WINUSERAPI HWND WINAPI GetDesktopWindow(VOID);
 WINUSERAPI BOOL WINAPI GetWindowRect(HWND hWnd, RECT *rect);
 #define GetModuleHandle GetModuleHandleA
-WINBASEAPI HMODULE WINAPI GetModuleHandleA(char *moduleName);
+WINBASEAPI HMODULE WINAPI GetModuleHandleA(char const *moduleName);
 #define RegisterClass RegisterClassA
 WINUSERAPI ATOM WINAPI RegisterClassA(WNDCLASSA const *wndClass);
 #define ChangeDisplaySettings ChangeDisplaySettingsA
@@ -339,15 +378,18 @@ WINUSERAPI HANDLE WINAPI LoadImageA(HINSTANCE hInst, char const *name, UINT type
 
 
 // Misc.
-WINBASEAPI void WINAPI OutputDebugString(char *outputString);
+#define OutputDebugString OutputDebugStringA
+WINBASEAPI void WINAPI OutputDebugStringA(char const *outputString);
+
 WINUSERAPI SHORT WINAPI GetAsyncKeyState(int vKey);
 WINUSERAPI LONG WINAPI ChangeDisplaySettingsA(DEVMODEA *devMode, DWORD flags);
 WINUSERAPI BOOL WINAPI AdjustWindowRect(RECT *rect, DWORD style, BOOL menu);
+WINBASEAPI DECLSPEC_NORETURN VOID WINAPI ExitProcess(UINT exitCode);
 
 // Load DLL.
-#define LoadLibrary  LoadLibraryA
-WINBASEAPI HMODULE WINAPI LoadLibraryA(char *libFileName);
-WINBASEAPI FARPROC WINAPI GetProcAddress(HMODULE hModule, char *procName);
+#define LoadLibrary LoadLibraryA
+WINBASEAPI HMODULE WINAPI LoadLibraryA(char const *libFileName);
+WINBASEAPI FARPROC WINAPI GetProcAddress(HMODULE hModule, char const *procName);
 
 // Mouse.
 #define HTCLIENT 1
@@ -378,11 +420,26 @@ WINBASEAPI void WINAPI Sleep(DWORD milliseconds);
 
 // Memory allocation / free.
 #define GMEM_DDESHARE 0x2000
-WINBASEAPI HGLOBAL WINAPI GlobalAlloc(unsigned uFlags, size_t dwBytes);
+WINBASEAPI HGLOBAL WINAPI GlobalAlloc(unsigned flags, size_t numBytes);
 WINBASEAPI HANDLE WINAPI GetProcessHeap(void);
+WINBASEAPI HANDLE WINAPI HeapCreate(DWORD flOptions, size_t initialSize, size_t maximumSize);
 WINBASEAPI void * WINAPI HeapAlloc(HANDLE hHeap, DWORD dwFlags, size_t bytes);
 WINBASEAPI int WINAPI HeapFree(HANDLE hHeap, DWORD dwFlags,void *mem);
 
+// File IO.
+WINBASEAPI BOOL WINAPI CloseHandle(HANDLE hObject);
+WINBASEAPI HANDLE WINAPI CreateFileA(const char *fileName, DWORD desiredAccess, DWORD shareMode,
+                                     SECURITY_ATTRIBUTES *securityAttributes, DWORD dwCreationDisposition, 
+                                     DWORD flagsAndAttributes, HANDLE hTemplateFile);
+WINBASEAPI BOOL WINAPI ReadFile(HANDLE file, void *buf, DWORD numBytesToRead, DWORD *numBytesRead, OVERLAPPED *overlapped);
+WINBASEAPI DWORD WINAPI SetFilePointer(HANDLE hFile, LONG distanceToMove, LONG *distanceToMoveHigh, DWORD moveMethod);
+
+// Alloc/free.
+//WINBASEAPI void * WINAPI VirtualAlloc(void *lpAddress, size_t dwSize, DWORD flAllocationType, DWORD flProtect);
+//WINBASEAPI BOOL WINAPI VirtualFree(void *addr, size_t size, DWORD freeType);
+WINBASEAPI HANDLE WINAPI GetProcessHeap(void);
+WINBASEAPI void * WINAPI HeapAlloc(HANDLE hHeap, DWORD flags, size_t numBytes);
+WINBASEAPI void * WINAPI HeapReAlloc(HANDLE hHeap, DWORD flags, void *mem, size_t numBytes);
 
 
 #ifdef __cplusplus

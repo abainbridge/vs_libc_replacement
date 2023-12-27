@@ -10,8 +10,10 @@ extern "C"
 #endif
 
 
-unsigned DragQueryFile(HDROP hDrop, unsigned iFile, char *file, unsigned cch);
-
+// Drag and drop.
+#define DragQueryFile DragQueryFileA
+SHSTDAPI_(UINT) DragQueryFileA(HDROP hDrop, UINT iFile, char *file, UINT cch);
+SHSTDAPI_(void) DragAcceptFiles(HWND hWnd, BOOL fAccept);
 
 #ifdef __cplusplus
 }

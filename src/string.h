@@ -25,8 +25,6 @@ char *strcpy(char *dest, const char *src);
 
 char *strdup(const char *str1);
 
-int atoi(char const *str);
-
 
 #ifdef __cplusplus
 }
