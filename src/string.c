@@ -92,17 +92,31 @@ void *memset(void *target, int value, size_t len) {
 
 
 //#pragma function(memmove)
-void *memmove(void *dst, void const *src, size_t len) {
-    char const *srcChar = (char const *)src;
-    char *dstChar = (char *)dst;
-    if (src > dst) {
-        for (size_t i = 0; i < len; i++)
-            dstChar[i] = srcChar[i];
+void *memmove(void *_dst, const void *_src, size_t count) {
+    void *ret = _dst;
+    char const *src = (char const *)_src;
+    char *dst = (char *)dst;
+    if (dst <= src || dst >= (src + count)) {
+        // Non-Overlapping Buffers
+        // copy from lower addresses to higher addresses
+        while (count--) {
+            *dst = *src;
+            dst++;
+            src++;
+        }
     }
     else {
-        for (size_t i = len - 1; i; i--)
-            dstChar[i] = srcChar[i];
+        // Overlapping Buffers
+        // copy from higher addresses to lower addresses
+        dst += count - 1;
+        src += count - 1;
+
+        while (count--) {
+            *dst = *src;
+            dst--;
+            src--;
+        }
     }
 
-    return dst;
+    return ret;
 }
