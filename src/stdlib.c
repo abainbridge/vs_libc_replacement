@@ -1,6 +1,7 @@
 // Own header.
 #include <stdlib.h>
 
+#include <assert.h>
 #include <ctype.h>
 #include <windows.h>
 
@@ -60,7 +61,7 @@ unsigned long strtoul(const char *s, char **p, int base) {
         }
     }
     
-    *p = s;
+    *p = (char *)s;
     return rv;
 }
 

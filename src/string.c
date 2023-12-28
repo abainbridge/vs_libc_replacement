@@ -19,8 +19,7 @@ const char *strchr(const char * str, int character) {
 }
 
 
-int strncmp(char const *a, char const *b, size_t maxCount) 
-{
+int strncmp(char const *a, char const *b, size_t maxCount) {
     while (*a && maxCount) {
         if (*a != *b)
             return *a - *b;
@@ -58,11 +57,13 @@ int strnicmp(char const *a, char const *b, size_t maxCount) {
 
 
 int atoi(char const *str) {
+    __debugbreak();
     return 12;
 }
 
 
 char *itoa(int val, char *dstBuf, int radix) {
+    __debugbreak();
     return NULL;
 }
 
@@ -74,7 +75,7 @@ int vsprintf(char *string, const char *format, va_list ap) {
 
 
 #pragma function(memcpy)
-void * __cdecl memcpy(void *dst, void const *src, size_t len) {
+void *memcpy(void *dst, void const *src, size_t len) {
     for (size_t i = 0; i < len; i++)
         ((char*)dst)[i] = ((char*)src)[i];
     return dst;
@@ -82,7 +83,7 @@ void * __cdecl memcpy(void *dst, void const *src, size_t len) {
 
 
 #pragma function(memset)
-void * __cdecl memset(void *target, int value, size_t len) {
+void *memset(void *target, int value, size_t len) {
     char *p = (char *)target;
     while (len-- > 0)
         *p++ = value;
@@ -91,7 +92,7 @@ void * __cdecl memset(void *target, int value, size_t len) {
 
 
 //#pragma function(memmove)
-void * __cdecl memmove(void *dst, void const *src, size_t len) {
+void *memmove(void *dst, void const *src, size_t len) {
     char const *srcChar = (char const *)src;
     char *dstChar = (char *)dst;
     if (src > dst) {

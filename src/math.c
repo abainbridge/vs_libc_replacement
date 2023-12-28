@@ -1,4 +1,5 @@
 // Platform headers
+#include <intrin.h>
 #include <xmmintrin.h>
 
 // Standard headers
@@ -8,6 +9,29 @@
 
 int _fltused = 0;
 
+
+unsigned int _ftoui3(const float x) {
+    return (unsigned int)_mm_cvttss_si32(_mm_set_ss(x));
+}
+
+unsigned int _dtoui3(const double x) {
+    return (unsigned int)_mm_cvttsd_si32(_mm_set_sd(x));
+}
+
+long _dtol3(const double x) {
+    return 123;
+}
+
+//double _ltod3(const __int64 src) {
+//     union foo { __m128i big; __int64 pair[2]; };
+//     union foo f;
+//     f.pair[0] = 0;
+//     f.pair[1] = src;
+//     __m128i x = _mm_add_epi64(f.big, _mm_castpd_si128(_mm_set1_pd(0x0018000000000000)));
+//     __m128d result = _mm_sub_pd(_mm_castsi128_pd(x), _mm_set1_pd(0x0018000000000000));
+//     return _mm_cvtsd_f64(result);
+//    return 200.0;
+//}
 
 #pragma function(sqrt)
 double sqrt(double x)
