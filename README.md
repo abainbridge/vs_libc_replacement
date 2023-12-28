@@ -10,4 +10,11 @@ To use it:
 
 This is a work in progress. Compared to something like Musl or uCLibc it's just a toy. Unfortunately those packages didn't work with Visual Studio last time I checked.
 
-If you are trying to produce small exes on Windows, I highly recommend you use this project in conjunction with http://www.crinkler.net. It replaces the Visual Studio linker with one that has many tricks to reduce executable size.
+If you are trying to produce small exes on Windows, it might be possible to use this project in conjunction with http://www.crinkler.net. It replaces the Visual Studio linker with one that has many tricks to reduce executable size.
+
+I found (and borrowed from) these are other tiny-libc-for-Windows projects:
+* https://www.codeproject.com/Articles/15156/Tiny-C-Runtime-Library
+* https://github.com/leepa/libctiny
+* https://www.benshoof.org/blog/minicrt
+* https://github.com/dreckard/minicrt
+* https://github.com/malxau/minicrt/tree/master/crt
