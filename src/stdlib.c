@@ -28,7 +28,9 @@ void *calloc(size_t nitems, size_t size) {
 
 
 void free(void *mem) {
-    HeapFree(GetProcessHeap(), 0, mem);
+    if (mem) {
+        HeapFree(GetProcessHeap(), 0, mem);
+    }
 }
 
 
