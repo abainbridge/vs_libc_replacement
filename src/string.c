@@ -8,6 +8,14 @@
 #define LOWER_CASE_MASK ('a' - 'A')
 
 
+char *strdup(const char *s) {
+    int len = strlen(s) + 1;
+    char *rv = malloc(len);
+    memcpy(rv, s, len);
+    return rv;
+}
+
+
 const char *strchr(const char * str, int character) {
     while (*str) {
         if (*str == character)
