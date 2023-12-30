@@ -376,7 +376,6 @@ WINUSERAPI int WINAPI ReleaseDC(HWND hWnd, HDC hDC);
 
 WINUSERAPI HANDLE WINAPI LoadImageA(HINSTANCE hInst, char const *name, UINT type, int cx, int cy, UINT fuLoad);
 
-
 // Misc.
 #define OutputDebugString OutputDebugStringA
 WINBASEAPI void WINAPI OutputDebugStringA(char const *outputString);
@@ -385,6 +384,8 @@ WINUSERAPI SHORT WINAPI GetAsyncKeyState(int vKey);
 WINUSERAPI LONG WINAPI ChangeDisplaySettingsA(DEVMODEA *devMode, DWORD flags);
 WINUSERAPI BOOL WINAPI AdjustWindowRect(RECT *rect, DWORD style, BOOL menu);
 WINBASEAPI DECLSPEC_NORETURN VOID WINAPI ExitProcess(UINT exitCode);
+typedef char * va_list;
+WINUSERAPI int WINAPI wvsprintfA(char *buf, char const *fmt, va_list arglist);
 
 // Load DLL.
 #define LoadLibrary LoadLibraryA

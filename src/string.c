@@ -68,12 +68,6 @@ char *itoa(int val, char *dstBuf, int radix) {
 }
 
 
-int vsprintf(char *string, const char *format, va_list ap) {
-    memcpy(string, "hellosdf", 9);
-    return 0;
-}
-
-
 #pragma function(memcpy)
 void *memcpy(void *dst, void const *src, size_t len) {
     for (size_t i = 0; i < len; i++)
@@ -95,7 +89,7 @@ void *memset(void *target, int value, size_t len) {
 void *memmove(void *_dst, const void *_src, size_t count) {
     void *ret = _dst;
     char const *src = (char const *)_src;
-    char *dst = (char *)dst;
+    char *dst = (char *)_dst;
     if (dst <= src || dst >= (src + count)) {
         // Non-Overlapping Buffers
         // copy from lower addresses to higher addresses

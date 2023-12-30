@@ -26,7 +26,8 @@ size_t fread(void *buf, size_t size, size_t count, FILE *f);
 long ftell(FILE *f);
 int fseek(FILE *f, long off, int origin);
 
-int __cdecl vsprintf(char *string, const char *format, va_list ap);
+#define vsprintf wvsprintfA
+//int __cdecl vsprintf(char *string, const char *format, va_list ap);
 
 #ifdef __cplusplus
 }
