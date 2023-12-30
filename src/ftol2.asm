@@ -3,6 +3,7 @@
 .CODE
 .xmm
 
+
 ; Convert double to 32-bit int.
 ; When building for 32-bit x86, with or without SSE enabled, the
 ; compiler will generate calls to _ftol2_sse and _ftol2. I don't
@@ -22,7 +23,7 @@ _ftol2_sse ENDP
 
 
 ; The input is in st(0), ie the x87 stack.
-_ftol2:
+_ftol2 PROC NEAR;
 	push  ebp
 	mov   ebp, esp
 	sub   esp, 20h
@@ -31,4 +32,6 @@ _ftol2:
 	mov   eax, dword ptr [esp+10h]
 	leave
 	ret 0
-end _ftol2
+_ftol2 ENDP
+
+END
