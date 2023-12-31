@@ -1,6 +1,7 @@
 #pragma once
 
 #include <crtdefs.h>
+#include <windows.h>
 
 #ifdef __cplusplus
 extern "C"
