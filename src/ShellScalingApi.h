@@ -1,6 +1,9 @@
 #pragma once
 
 
+#include <windows.h>
+
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -13,6 +16,8 @@ typedef enum PROCESS_DPI_AWARENESS {
     PROCESS_PER_MONITOR_DPI_AWARE = 2
 } PROCESS_DPI_AWARENESS;
 
+
+STDAPI SetProcessDpiAwareness(PROCESS_DPI_AWARENESS value);
 
 
 #ifdef __cplusplus
