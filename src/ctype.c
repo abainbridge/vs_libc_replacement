@@ -1,3 +1,5 @@
+#ifndef _DEBUG
+
 #include <ctype.h>
 
 #define LOWER_CASE_MASK ('a' - 'A')
@@ -26,3 +28,5 @@ int tolower(int c) {
 int isspace(int c) {
     return c == ' ' || c == '\t';
 }
+
+#endif

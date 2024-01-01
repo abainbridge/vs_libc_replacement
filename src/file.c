@@ -1,3 +1,5 @@
+#ifndef _DEBUG
+
 // Own header.
 #include <stdio.h>
 
@@ -83,3 +85,5 @@ int fseek(FILE *f, long offset, int origin) {
 //    f->flags &= ~_FILE_EOF;
     return 0;
 }
+
+#endif

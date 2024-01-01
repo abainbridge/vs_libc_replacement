@@ -1,3 +1,5 @@
+#ifndef _DEBUG
+
 // Platform headers
 #include <intrin.h>
 #include <xmmintrin.h>
@@ -137,3 +139,5 @@ double cos(double x)
     double rv = sin(x + PI_BY_2);
     return rv;
 }
+
+#endif

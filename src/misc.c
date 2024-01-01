@@ -1,3 +1,5 @@
+#ifndef _DEBUG
+
 #include <assert.h>
 #include <windows.h>
 
@@ -37,7 +39,9 @@ void _initterm(_PVFV * pfbegin, _PVFV * pfend) {
     // * the end is encountered.  Do not skip the first entry.  The initial
     // * value of pfbegin points to the first valid entry.  Do not try to
     // * execute what pfend points to.  Only entries before pfend are valid.
-    while (pfbegin < pfend) {
+    while (pfbegin < pfend) {#ifndef _DEBUG
+
+
         // if current table entry is non-NULL, call thru it.
         if (*pfbegin != NULL)
             (**pfbegin)();
@@ -92,3 +96,5 @@ void premain(void) {
     WinMain(0, 0, 0, 0);
     exit(0);
 }
+
+#endif

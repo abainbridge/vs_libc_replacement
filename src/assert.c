@@ -1,3 +1,5 @@
+#ifndef _DEBUG
+
 #include <assert.h>
 //#include <windows.h>
 
@@ -6,3 +8,5 @@ void assert(int expression) {
         __debugbreak();
     //_CrtDbgBreak();
 }
+
+#endif

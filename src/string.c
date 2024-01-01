@@ -1,7 +1,7 @@
-// #include <windows.h>
-// #include <Winuser.h>
+#ifndef _DEBUG
+
+#include "string.h"
 #include <stdlib.h>
-//#include "stdlib_common.h"
 #include <crtdefs.h>
 
 
@@ -16,10 +16,10 @@ char *strdup(const char *s) {
 }
 
 
-const char *strchr(const char * str, int character) {
+char *strchr(const char * str, int character) {
     while (*str) {
         if (*str == character)
-            return str;
+            return (char *)str;
         str++;
     }
 
@@ -122,3 +122,5 @@ void *memmove(void *_dst, const void *_src, size_t count) {
 
     return ret;
 }
+
+#endif

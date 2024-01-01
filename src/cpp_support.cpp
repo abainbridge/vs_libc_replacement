@@ -1,3 +1,5 @@
+#ifndef _DEBUG
+
 #include <stdlib.h>
 
 
@@ -16,3 +18,5 @@ void __cdecl operator delete(void *ptr) {
 void __cdecl operator delete[](void *ptr) {
     free(ptr);
 }
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef _DEBUG
+
 // Own header.
 #include <stdlib.h>
 
@@ -71,3 +73,6 @@ unsigned long strtoul(const char *s, char **p, int base) {
 void exit(int code) {
     ExitProcess(code);
 }
+
+
+#endif
