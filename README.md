@@ -4,25 +4,25 @@ A replacement for Visual Studio's C runtime and certain win32 API headers. This 
 The priority is to reduce executable size and keep the code as simple as possible, even if it means the implementations aren't standards compliant.
 
 To use it:
-1. Add this project to your solution.
-2. In the Release configuration:
-  a. Link with /NODEFAULTLIB (from the Project Properties, set Linker->Input->Ignore All Default Libraries to Yes).
-  b. Set the entry point to "premain" in the linker options (from the Project Properties, set Linker->Advanced->Entry Point).
-  c. Enable MASM support in VS. To do this in VS 2013 right click on the project, select "Build Dependencies->Build Customizations". Enable masm in the resulting dialog. Then right click on each of the .asm files, select Properties, the select Microsoft Macro Assembler as the Item Type.
+* Add this project to your solution.
+* In the Release configuration:
+  - Link with /NODEFAULTLIB (from the Project Properties, set Linker->Input->Ignore All Default Libraries to Yes).
+  - Set the entry point to "premain" in the linker options (from the Project Properties, set Linker->Advanced->Entry Point).
+  - Enable MASM support in VS. To do this in VS 2013 right click on the project, select "Build Dependencies->Build Customizations". Enable masm in the resulting dialog. Then right click on each of the .asm files, select Properties, the select Microsoft Macro Assembler as the Item Type.
 
 I test with Visual Studio 2013, with Platform set to Win32. My compiler flags were:
-/GS- - Disable security check.
-/Qpar- - Ignore #pragma loop(hint_parallel).
-/GL - Enable whole program optimization.
-/Gy - Enable function level linking.
-/O1 - Minimize Size.
-/Ob2 - Inline any suitable functions.
-/fp:fast - Use the fast floating point model. This makes floating point operations simpler than the IEEE standard would require. This prevents the compiler inserting function calls to handle things like float-to-int conversions that would otherwise need to be implemented by the CRT.
-/fp:except- - Disable floating point exceptions.
-/GF - Enable string pooling.
-/Gd - Set calling convention to __cdecl.
-/Oi - Enable intrinsic functions.
-/Os - Favour small code.
+* /GS- - Disable security check.
+* /Qpar- - Ignore #pragma loop(hint_parallel).
+* /GL - Enable whole program optimization.
+* /Gy - Enable function level linking.
+* /O1 - Minimize Size.
+* /Ob2 - Inline any suitable functions.
+* /fp:fast - Use the fast floating point model. This makes floating point operations simpler than the IEEE standard would require. This prevents the compiler inserting function calls to handle things like float-to-int conversions that would otherwise need to be implemented by the CRT.
+* /fp:except- - Disable floating point exceptions.
+* /GF - Enable string pooling.
+* /Gd - Set calling convention to __cdecl.
+* /Oi - Enable intrinsic functions.
+* /Os - Favour small code.
 
 Linker flags were:
 /MANIFEST:NO /LTCG /NXCOMPAT /DYNAMICBASE:NO "kernel32.lib" "user32.lib" "gdi32.lib" "Shcore.lib" "shell32.lib" /MACHINE:X86 /ENTRY:"premain" /OPT:REF /SAFESEH:NO /OPT:ICF /NODEFAULTLIB /TLBID:1 
