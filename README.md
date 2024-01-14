@@ -35,3 +35,6 @@ I found (and borrowed from) these are other tiny-libc-for-Windows projects:
 * https://www.benshoof.org/blog/minicrt
 * https://github.com/dreckard/minicrt
 * https://github.com/malxau/minicrt/tree/master/crt
+
+Some interesting information about how static variable initialization works:
+https://web.archive.org/web/20090414052415/http://www.codeguru.com/cpp/misc/misc/threadsprocesses/article.php/c6945__2
