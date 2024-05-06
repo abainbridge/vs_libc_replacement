@@ -87,6 +87,7 @@ typedef enum {
     WM_CLOSE = 0x10,
     WM_SETCURSOR = 0x20,
     WM_WINDOWPOSCHANGED = 0x47,
+    WM_NCCREATE = 0x81,
     WM_KEYDOWN = 0x100,
     WM_KEYUP = 0x101,
     WM_CHAR = 0x102,
@@ -106,6 +107,25 @@ typedef enum {
     WM_MOUSEWHEEL = 0x20A,
     WM_EXITMENULOOP = 0x212,
     WM_DROPFILES = 0x233,
+};
+
+enum DWMWINDOWATTRIBUTE {
+    DWMWA_NCRENDERING_ENABLED = 1,      // [get] Is non-client rendering enabled/disabled
+    DWMWA_NCRENDERING_POLICY,           // [set] Non-client rendering policy
+    DWMWA_TRANSITIONS_FORCEDISABLED,    // [set] Potentially enable/forcibly disable transitions
+    DWMWA_ALLOW_NCPAINT,                // [set] Allow contents rendered in the non-client area to be visible on the DWM-drawn frame.
+    DWMWA_CAPTION_BUTTON_BOUNDS,        // [get] Bounds of the caption button area in window-relative space.
+    DWMWA_NONCLIENT_RTL_LAYOUT,         // [set] Is non-client content RTL mirrored
+    DWMWA_FORCE_ICONIC_REPRESENTATION,  // [set] Force this window to display iconic thumbnails.
+    DWMWA_FLIP3D_POLICY,                // [set] Designates how Flip3D will treat the window.
+    DWMWA_EXTENDED_FRAME_BOUNDS,        // [get] Gets the extended frame bounds rectangle in screen space
+    DWMWA_HAS_ICONIC_BITMAP,            // [set] Indicates an available bitmap when there is no better thumbnail representation.
+    DWMWA_DISALLOW_PEEK,                // [set] Don't invoke Peek on the window.
+    DWMWA_EXCLUDED_FROM_PEEK,           // [set] LivePreview exclusion information
+    DWMWA_CLOAK,                        // [set] Cloak or uncloak the window
+    DWMWA_CLOAKED,                      // [get] Gets the cloaked state of the window
+    DWMWA_FREEZE_REPRESENTATION,        // [set] Force this window to freeze the thumbnail without live update
+    DWMWA_LAST
 };
 
 
@@ -138,6 +158,7 @@ DECLARE_HANDLE(HICON);
 DECLARE_HANDLE(HBRUSH);
 DECLARE_HANDLE(HMENU);
 DECLARE_HANDLE(HDC);
+typedef void *HMONITOR;
 typedef HINSTANCE HMODULE;
 typedef HICON HCURSOR;
 typedef LONG HRESULT;
@@ -330,6 +351,13 @@ typedef struct _SECURITY_ATTRIBUTES {
     BOOL bInheritHandle;
 } SECURITY_ATTRIBUTES;
 
+typedef struct tagMONITORINFO {
+    DWORD   cbSize;
+    RECT    rcMonitor;
+    RECT    rcWork;
+    DWORD   dwFlags;
+} MONITORINFO;
+
 
 // Clipboard.
 #define CF_TEXT             1
@@ -346,7 +374,9 @@ WINBASEAPI int WINAPI GlobalUnlock(HGLOBAL hMem);
 // Window handle.
 WINUSERAPI int WINAPI ScreenToClient(HWND hWnd, POINT *point);
 WINUSERAPI HWND WINAPI GetDesktopWindow(VOID);
+WINUSERAPI BOOL WINAPI GetClientRect(HWND hWnd, RECT *rect);
 WINUSERAPI BOOL WINAPI GetWindowRect(HWND hWnd, RECT *rect);
+WINUSERAPI BOOL WINAPI SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, UINT uFlags);
 #define GetModuleHandle GetModuleHandleA
 WINBASEAPI HMODULE WINAPI GetModuleHandleA(char const *moduleName);
 #define RegisterClass RegisterClassA
@@ -367,6 +397,15 @@ WINUSERAPI BOOL WINAPI BringWindowToTop(HWND hWnd);
 WINUSERAPI BOOL WINAPI SetForegroundWindow(HWND hWnd);
 #define SetWindowText SetWindowTextA
 WINUSERAPI BOOL WINAPI SetWindowTextA(HWND hWnd, char const *string);
+WINUSERAPI HANDLE WINAPI GetPropA(HWND hWnd, char const *string);
+WINUSERAPI BOOL WINAPI SetPropA(HWND hWnd, char const *string, HANDLE hData);
+WINUSERAPI BOOL WINAPI MoveWindow(HWND hWnd, int X, int Y, int nWidth, int nHeight, BOOL bRepaint);
+
+WINUSERAPI BOOL WINAPI GetMonitorInfoA(HMONITOR hMonitor, MONITORINFO *mi);
+
+// Desktop Window Manager (DWM)
+WINUSERAPI HRESULT WINAPI DwmGetWindowAttribute(HWND hwnd, DWORD dwAttribute, void *attribute, DWORD cbAttribute);
+WINUSERAPI HRESULT WINAPI DwmFlush();
 
 // Device context.
 WINUSERAPI HDC WINAPI GetDC(HWND hWnd);
