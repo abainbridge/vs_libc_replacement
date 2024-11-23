@@ -15,6 +15,11 @@ int isalpha(int c) {
 }
 
 
+int isalnum(int c) {
+    return isalpha(c) | isdigit(c);
+}
+
+
 int isupper(int c) {
     return !(c & LOWER_CASE_MASK);
 }
