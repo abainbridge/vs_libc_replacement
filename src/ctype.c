@@ -14,6 +14,9 @@ int isalpha(int c) {
     return c >= 'a' && c <= 'z';
 }
 
+int isalnum(int c) {
+    return isdigit(c) || isalpha(c);
+}
 
 int isalnum(int c) {
     return isalpha(c) | isdigit(c);
