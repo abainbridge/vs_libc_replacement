@@ -23,6 +23,9 @@ char *strchr(const char * str, int character) {
         str++;
     }
 
+    if (*str == character)
+        return (char *)str;
+
     return NULL;
 }
 
@@ -73,6 +76,17 @@ int atoi(char const *str) {
 char *itoa(int val, char *dstBuf, int radix) {
     __debugbreak();
     return NULL;
+}
+
+
+#pragma function(memcmp)
+int memcmp(void const* a, void const* b, size_t len) {
+    for (size_t i = 0; i < len; i++) {
+        int diff = ((char const*)a)[i] - ((char const*)b)[i];
+        if (diff)
+            return diff;
+    }
+    return 0;
 }
 
 
